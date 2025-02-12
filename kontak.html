@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visella Estesia - Kontak</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body style="background-image: url('Background.jpg'); background-size: cover; background-attachment: fixed;">
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="novel.html">Novel</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="kontak.html">Kontak</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <section class="contact-form" style="background: rgba(0, 0, 0, 0.8); padding: 20px; border-radius: 10px;">
+            <h2 style="color: white;">Hubungi Saya</h2>
+            <form action="save_message.php" method="POST">
+                <input type="text" name="name" placeholder="Nama Anda" required>
+                <input type="email" name="email" placeholder="Email Anda" required>
+                <textarea name="message" placeholder="Pesan Anda" required></textarea>
+                <button type="submit" class="btn">Kirim</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p style="color: white;">© 2025 Visella Estesia. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>
