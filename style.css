@@ -6,11 +6,13 @@
     font-family: Arial, sans-serif;
 }
 
+/* Struktur Utama */
+html,
 body {
+    height: 100%;
+    /* Pastikan tinggi halaman penuh */
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
-    /* Memastikan body setinggi layar */
     background-color: #E6E6FA;
     color: #4B0082;
 }
@@ -46,12 +48,15 @@ nav ul li a {
     font-size: 18px;
 }
 
-/* Main Content */
+/* Main Content (Agar Footer Tidak Menggantung) */
 main {
     flex: 1;
     /* Mengisi ruang kosong sebelum footer */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Pastikan konten tetap proporsional */
     padding: 20px;
-    text-align: center;
 }
 
 /* Bio Section */
@@ -126,9 +131,13 @@ main {
 
 /* Novel List */
 .novel-list {
+    flex-grow: 1;
+    /* Pastikan konten selalu cukup tinggi */
+    background: rgba(0, 0, 0, 0.8);
     padding: 20px;
-    text-align: center;
+    border-radius: 10px;
     width: 100%;
+    text-align: center;
 }
 
 .novel {
@@ -138,11 +147,14 @@ main {
     border-radius: 10px;
     width: 80%;
     text-align: center;
+    display: flex;
+    align-items: center;
 }
 
 .novel img {
     width: 100px;
     border-radius: 10px;
+    margin-right: 15px;
 }
 
 /* Contact Form */
@@ -175,7 +187,7 @@ main {
     background-color: #4B0082;
 }
 
-/* Footer Sticky */
+/* Footer Sticky (Tetap di Bawah, Tidak Menggantung) */
 footer {
     background-color: #6A0DAD;
     color: white;
@@ -216,6 +228,12 @@ footer {
 
     .novel {
         width: 90%;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .novel img {
+        margin-bottom: 10px;
     }
 
     .contact-form input,
