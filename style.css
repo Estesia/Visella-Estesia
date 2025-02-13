@@ -1,30 +1,34 @@
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    background-color: #E6E6FA;
-    color: #4B0082;
-    min-height: 100vh;
+/* Reset Default */
+* {
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
 }
 
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    /* Memastikan body setinggi layar */
+    background-color: #E6E6FA;
+    color: #4B0082;
+}
+
+/* Header */
 header {
     background-color: #6A0DAD;
-    padding: 10px;
+    padding: 15px;
     text-align: center;
     position: sticky;
+    top: 0;
     width: 100%;
+    z-index: 1000;
 }
 
-main {
-    flex: 1;
-    /* Mengisi ruang kosong sebelum footer */
-}
-
+/* Navigasi */
 nav ul {
     list-style: none;
-    padding: 0;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
@@ -42,12 +46,20 @@ nav ul li a {
     font-size: 18px;
 }
 
+/* Main Content */
+main {
+    flex: 1;
+    /* Mengisi ruang kosong sebelum footer */
+    padding: 20px;
+    text-align: center;
+}
+
+/* Bio Section */
 .bio {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: left;
     padding: 40px;
-    flex-wrap: wrap;
     text-align: center;
     width: 100%;
 }
@@ -64,12 +76,15 @@ nav ul li a {
 
 .bio-text h1 {
     font-size: 28px;
+    margin-bottom: 10px;
 }
 
 .bio-text p {
     font-size: 18px;
+    margin-bottom: 15px;
 }
 
+/* Tombol */
 .btn {
     display: inline-block;
     background-color: #DDA0DD;
@@ -79,20 +94,41 @@ nav ul li a {
     border-radius: 5px;
     transition: background 0.3s;
     font-size: 16px;
+    margin-top: 10px;
 }
 
 .btn:hover {
     background-color: #BA55D3;
 }
 
+/* Social Media Buttons */
+.social-buttons {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.social-buttons a {
+    background-color: #DDA0DD;
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 5px;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.social-buttons a:hover {
+    background-color: #BA55D3;
+}
+
+/* Novel List */
 .novel-list {
     padding: 20px;
     text-align: center;
     width: 100%;
-}
-
-.novel-list h2 {
-    font-size: 26px;
 }
 
 .novel {
@@ -109,6 +145,7 @@ nav ul li a {
     border-radius: 10px;
 }
 
+/* Contact Form */
 .contact-form {
     text-align: center;
     padding: 20px;
@@ -138,6 +175,7 @@ nav ul li a {
     background-color: #4B0082;
 }
 
+/* Footer Sticky */
 footer {
     background-color: #6A0DAD;
     color: white;
@@ -156,8 +194,8 @@ footer {
     }
 
     .bio {
-        flex-direction: column;
         width: 100%;
+        padding: 20px;
     }
 
     .bio img {
