@@ -187,12 +187,12 @@
         <p>© 2025 Visella Estesia. All Rights Reserved.</p>
     </footer>
 
-    <!-- Tambahkan Firebase SDK -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore-compat.js"></script>
 
     <script>
-        // Ganti dengan config punyamu dari Firebase Console
+        // Konfigurasi Firebase - sama seperti di kontak.html
         var firebaseConfig = {
             apiKey: "AIzaSyCCiGhRrA98vxAdCxFdOuva7qvXb_oWA7c",
             authDomain: "visella-pesan.firebaseapp.com",
@@ -202,9 +202,7 @@
             appId: "1:118827641712:web:bb890c75087b2762513db5",
             measurementId: "G-23VNV12QD4"
         };
-        // Inisialisasi Firebase
         firebase.initializeApp(firebaseConfig);
-        // Inisialisasi Firestore
         let db = firebase.firestore();
 
         // Muat data saat halaman selesai dimuat
@@ -212,14 +210,16 @@
 
         async function loadMessages() {
             try {
-                // Ambil data dari koleksi "pesanMasuk", urutkan berdasarkan 'waktu' descending
-                let snapshot = await db.collection("pesanMasuk").orderBy("waktu", "desc").get();
+                // Ambil data dari koleksi "pesanMasuk", urutkan berdasar 'waktu' descending
+                let snapshot = await db.collection("pesanMasuk")
+                    .orderBy("waktu", "desc")
+                    .get();
+
                 let tbody = document.getElementById("pesanTableBody");
                 tbody.innerHTML = "";
 
                 snapshot.forEach((doc) => {
                     let data = doc.data();
-                    // Buat baris <tr> baru
                     let row = document.createElement("tr");
                     row.innerHTML = `
                         <td>${data.nama}</td>
@@ -235,7 +235,7 @@
             }
         }
 
-        // Fungsi Hapus (Satu Pesan)
+        // Hapus satu pesan
         async function hapusPesan(docId) {
             try {
                 await db.collection("pesanMasuk").doc(docId).delete();
@@ -245,12 +245,11 @@
             }
         }
 
-        // Fungsi Hapus Semua Pesan
+        // Hapus semua pesan
         async function hapusSemuaPesan() {
             try {
                 let snapshot = await db.collection("pesanMasuk").get();
                 let batch = db.batch();
-
                 snapshot.forEach((doc) => {
                     batch.delete(doc.ref);
                 });

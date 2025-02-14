@@ -39,13 +39,12 @@
         <p>© 2025 Visella Estesia. All Rights Reserved.</p>
     </footer>
 
-    <!-- Tambahkan Firebase SDK -->
+    <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore-compat.js"></script>
 
     <script>
-        // GANTI DENGAN KONFIGURASI PUNYAMU DARI FIREBASE
-        // Dapatkan ini dari Firebase Console -> Project Settings -> Tambahkan Aplikasi Web
+        // Konfigurasi Firebase - salin dari Firebase Console -> Project Settings -> Aplikasi Web
         var firebaseConfig = {
             apiKey: "AIzaSyCCiGhRrA98vxAdCxFdOuva7qvXb_oWA7c",
             authDomain: "visella-pesan.firebaseapp.com",
@@ -60,17 +59,18 @@
         // Inisialisasi Firestore
         let db = firebase.firestore();
 
-        // Event submit form
+        // Ketika form disubmit
         document.getElementById("contactForm").addEventListener("submit", async function (event) {
             event.preventDefault();
 
             let nama = document.getElementById("nama").value;
             let email = document.getElementById("email").value;
             let pesan = document.getElementById("pesan").value;
+            // Menyimpan waktu dalam bentuk string
             let waktu = new Date().toLocaleString();
 
             try {
-                // Simpan data ke koleksi "pesanMasuk" di Firestore
+                // Menyimpan data ke koleksi "pesanMasuk" di Firestore
                 await db.collection("pesanMasuk").add({
                     nama: nama,
                     email: email,
