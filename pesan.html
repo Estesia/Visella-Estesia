@@ -96,6 +96,12 @@
             border: 1px solid #ddd;
             padding: 12px;
             text-align: center;
+            /* Supaya teks panjang bisa ter-wrapping dan tidak merusak layout */
+            white-space: normal;
+            word-wrap: break-word;
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         th {
