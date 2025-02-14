@@ -39,20 +39,50 @@
         <p>© 2025 Visella Estesia. All Rights Reserved.</p>
     </footer>
 
+    <!-- Tambahkan Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore-compat.js"></script>
+
     <script>
-        document.getElementById("contactForm").addEventListener("submit", function (event) {
+        // GANTI DENGAN KONFIGURASI PUNYAMU DARI FIREBASE
+        // Dapatkan ini dari Firebase Console -> Project Settings -> Tambahkan Aplikasi Web
+        var firebaseConfig = {
+            apiKey: "AIzaSyDcqzH50wXZQ21n2CTRa7jZIahoyO9vbik",
+            authDomain: "pesanglobalvisella.firebaseapp.com",
+            projectId: "pesanglobalvisella",
+            storageBucket: "pesanglobalvisella.firebasestorage.app",
+            messagingSenderId: "883082037154",
+            appId: "1:883082037154:web:feb25e80026412a03254fb",
+            measurementId: "G-9SEFZK2ZSG"
+        };
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        // Inisialisasi Firestore
+        let db = firebase.firestore();
+
+        // Event submit form
+        document.getElementById("contactForm").addEventListener("submit", async function (event) {
             event.preventDefault();
 
             let nama = document.getElementById("nama").value;
             let email = document.getElementById("email").value;
             let pesan = document.getElementById("pesan").value;
+            let waktu = new Date().toLocaleString();
 
-            let pesanTersimpan = JSON.parse(localStorage.getItem("pesanMasuk")) || [];
-            pesanTersimpan.push({ nama, email, pesan, waktu: new Date().toLocaleString() });
-            localStorage.setItem("pesanMasuk", JSON.stringify(pesanTersimpan));
-
-            document.getElementById("contactForm").reset();
-            document.getElementById("statusPesan").style.display = "block";
+            try {
+                // Simpan data ke koleksi "pesanMasuk" di Firestore
+                await db.collection("pesanMasuk").add({
+                    nama: nama,
+                    email: email,
+                    pesan: pesan,
+                    waktu: waktu
+                });
+                // Reset form
+                document.getElementById("contactForm").reset();
+                document.getElementById("statusPesan").style.display = "block";
+            } catch (error) {
+                console.error("Gagal mengirim pesan: ", error);
+            }
         });
     </script>
 </body>

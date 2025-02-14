@@ -123,7 +123,6 @@
             font-size: 14px;
         }
 
-
         /* Footer */
         footer {
             background-color: #6A0DAD;
@@ -164,7 +163,6 @@
     <main>
         <section class="message-display">
             <h2>Daftar Pesan Masuk</h2>
-
             <!-- Tombol Hapus Semua -->
             <button class="delete-all-btn" onclick="hapusSemuaPesan()">Hapus Semua</button>
 
@@ -179,7 +177,7 @@
                     </tr>
                 </thead>
                 <tbody id="pesanTableBody">
-                    <!-- Data akan dimasukkan oleh JavaScript -->
+                    <!-- Data akan dimasukkan oleh JavaScript dari Firestore -->
                 </tbody>
             </table>
         </section>
@@ -189,44 +187,78 @@
         <p>© 2025 Visella Estesia. All Rights Reserved.</p>
     </footer>
 
+    <!-- Tambahkan Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore-compat.js"></script>
+
     <script>
-        let pesanTersimpan = [];
+        // Ganti dengan config punyamu dari Firebase Console
+        var firebaseConfig = {
+            apiKey: "AIzaSyDcqzH50wXZQ21n2CTRa7jZIahoyO9vbik",
+            authDomain: "pesanglobalvisella.firebaseapp.com",
+            projectId: "pesanglobalvisella",
+            storageBucket: "pesanglobalvisella.firebasestorage.app",
+            messagingSenderId: "883082037154",
+            appId: "1:883082037154:web:feb25e80026412a03254fb",
+            measurementId: "G-9SEFZK2ZSG"
+        };
+        // Inisialisasi Firebase
+        firebase.initializeApp(firebaseConfig);
+        // Inisialisasi Firestore
+        let db = firebase.firestore();
 
-        document.addEventListener("DOMContentLoaded", function () {
-            pesanTersimpan = JSON.parse(localStorage.getItem("pesanMasuk")) || [];
-            renderTable();
-        });
+        // Muat data saat halaman selesai dimuat
+        document.addEventListener("DOMContentLoaded", loadMessages);
 
-        // Fungsi untuk menampilkan data di tabel
-        function renderTable() {
-            const tbody = document.getElementById("pesanTableBody");
-            tbody.innerHTML = "";
+        async function loadMessages() {
+            try {
+                // Ambil data dari koleksi "pesanMasuk", urutkan berdasarkan 'waktu' descending
+                let snapshot = await db.collection("pesanMasuk").orderBy("waktu", "desc").get();
+                let tbody = document.getElementById("pesanTableBody");
+                tbody.innerHTML = "";
 
-            pesanTersimpan.forEach((pesan, index) => {
-                let row = document.createElement("tr");
-                row.innerHTML = `
-          <td>${pesan.nama}</td>
-          <td>${pesan.email}</td>
-          <td>${pesan.pesan}</td>
-          <td>${pesan.waktu}</td>
-          <td><button class="delete-btn" onclick="hapusPesan(${index})">Hapus</button></td>
-        `;
-                tbody.appendChild(row);
-            });
+                snapshot.forEach((doc) => {
+                    let data = doc.data();
+                    // Buat baris <tr> baru
+                    let row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>${data.nama}</td>
+                        <td>${data.email}</td>
+                        <td>${data.pesan}</td>
+                        <td>${data.waktu}</td>
+                        <td><button class="delete-btn" onclick="hapusPesan('${doc.id}')">Hapus</button></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Error memuat data:", error);
+            }
         }
 
-        // Hapus satu pesan
-        function hapusPesan(index) {
-            pesanTersimpan.splice(index, 1);
-            localStorage.setItem("pesanMasuk", JSON.stringify(pesanTersimpan));
-            renderTable();
+        // Fungsi Hapus (Satu Pesan)
+        async function hapusPesan(docId) {
+            try {
+                await db.collection("pesanMasuk").doc(docId).delete();
+                loadMessages(); // Refresh tampilan
+            } catch (error) {
+                console.error("Error menghapus data:", error);
+            }
         }
 
-        // Hapus semua pesan
-        function hapusSemuaPesan() {
-            localStorage.removeItem("pesanMasuk");
-            pesanTersimpan = [];
-            renderTable();
+        // Fungsi Hapus Semua Pesan
+        async function hapusSemuaPesan() {
+            try {
+                let snapshot = await db.collection("pesanMasuk").get();
+                let batch = db.batch();
+
+                snapshot.forEach((doc) => {
+                    batch.delete(doc.ref);
+                });
+                await batch.commit();
+                loadMessages();
+            } catch (error) {
+                console.error("Error menghapus semua data:", error);
+            }
         }
     </script>
 </body>
