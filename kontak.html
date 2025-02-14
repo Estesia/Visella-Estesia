@@ -40,11 +40,13 @@
     </footer>
 
     <!-- Firebase SDK -->
+    <!-- Tambah juga firebase-auth-compat.js untuk Anonymous Auth -->
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore-compat.js"></script>
 
     <script>
-        // Konfigurasi Firebase - salin dari Firebase Console -> Project Settings -> Aplikasi Web
+        // Konfigurasi Firebase
         var firebaseConfig = {
             apiKey: "AIzaSyCCiGhRrA98vxAdCxFdOuva7qvXb_oWA7c",
             authDomain: "visella-pesan.firebaseapp.com",
@@ -56,21 +58,31 @@
         };
         // Inisialisasi Firebase
         firebase.initializeApp(firebaseConfig);
-        // Inisialisasi Firestore
+
+        // Inisialisasi Auth & Firestore
+        let auth = firebase.auth();
         let db = firebase.firestore();
 
-        // Ketika form disubmit
+        // Login Anonymous agar request.auth != null
+        auth.signInAnonymously()
+            .then(() => {
+                console.log("Berhasil login anonim di kontak.html");
+            })
+            .catch((error) => {
+                console.error("Gagal login anonim:", error);
+            });
+
+        // Event submit form
         document.getElementById("contactForm").addEventListener("submit", async function (event) {
             event.preventDefault();
 
             let nama = document.getElementById("nama").value;
             let email = document.getElementById("email").value;
             let pesan = document.getElementById("pesan").value;
-            // Menyimpan waktu dalam bentuk string
             let waktu = new Date().toLocaleString();
 
             try {
-                // Menyimpan data ke koleksi "pesanMasuk" di Firestore
+                // Menyimpan data ke koleksi "pesanMasuk"
                 await db.collection("pesanMasuk").add({
                     nama: nama,
                     email: email,
@@ -81,7 +93,7 @@
                 document.getElementById("contactForm").reset();
                 document.getElementById("statusPesan").style.display = "block";
             } catch (error) {
-                console.error("Gagal mengirim pesan: ", error);
+                console.error("Gagal mengirim pesan:", error);
             }
         });
     </script>

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Pesan Masuk dengan Fitur Hapus</title>
     <style>
-        /* Reset Default */
+        /* (CSS sama dengan yang sebelumnya) */
         * {
             margin: 0;
             padding: 0;
@@ -14,19 +14,16 @@
             font-family: Arial, sans-serif;
         }
 
-        /* Struktur Utama */
         html,
         body {
             height: 100%;
             display: flex;
             flex-direction: column;
             background-color: #E6E6FA;
-            /* Lavender */
             color: #4B0082;
             overflow-x: hidden;
         }
 
-        /* Header */
         header {
             background-color: #6A0DAD;
             padding: 15px;
@@ -37,7 +34,6 @@
             z-index: 1000;
         }
 
-        /* Navigasi */
         nav ul {
             list-style: none;
             display: flex;
@@ -57,14 +53,12 @@
             font-size: 18px;
         }
 
-        /* Main Content */
         main {
             flex: 1;
             display: block;
             padding: 20px;
         }
 
-        /* Container Tabel Pesan */
         .message-display {
             background: #fff;
             border-radius: 10px;
@@ -80,10 +74,8 @@
             margin-bottom: 10px;
         }
 
-        /* Tombol Hapus Semua */
         .delete-all-btn {
             background-color: #9C2450;
-            /* Merah Material UI */
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -111,10 +103,8 @@
             color: white;
         }
 
-        /* Tombol Hapus per Baris */
         .delete-btn {
             background-color: #A3476D;
-            /* Merah Material UI */
             color: #fff;
             border: none;
             border-radius: 3px;
@@ -123,7 +113,6 @@
             font-size: 14px;
         }
 
-        /* Footer */
         footer {
             background-color: #6A0DAD;
             color: white;
@@ -133,7 +122,6 @@
             font-size: 14px;
         }
 
-        /* Responsive */
         @media (max-width: 768px) {
             nav ul {
                 flex-direction: column;
@@ -163,9 +151,7 @@
     <main>
         <section class="message-display">
             <h2>Daftar Pesan Masuk</h2>
-            <!-- Tombol Hapus Semua -->
             <button class="delete-all-btn" onclick="hapusSemuaPesan()">Hapus Semua</button>
-
             <table>
                 <thead>
                     <tr>
@@ -176,9 +162,7 @@
                         <th>Aksi</th>
                     </tr>
                 </thead>
-                <tbody id="pesanTableBody">
-                    <!-- Data akan dimasukkan oleh JavaScript dari Firestore -->
-                </tbody>
+                <tbody id="pesanTableBody"></tbody>
             </table>
         </section>
     </main>
@@ -189,10 +173,11 @@
 
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.7/firebase-firestore-compat.js"></script>
 
     <script>
-        // Konfigurasi Firebase - sama seperti di kontak.html
+        // Konfigurasi Firebase - sama dengan kontak.html
         var firebaseConfig = {
             apiKey: "AIzaSyCCiGhRrA98vxAdCxFdOuva7qvXb_oWA7c",
             authDomain: "visella-pesan.firebaseapp.com",
@@ -203,18 +188,26 @@
             measurementId: "G-23VNV12QD4"
         };
         firebase.initializeApp(firebaseConfig);
+
+        let auth = firebase.auth();
         let db = firebase.firestore();
 
-        // Muat data saat halaman selesai dimuat
-        document.addEventListener("DOMContentLoaded", loadMessages);
+        // Segera login Anonymous, agar Firestore mengizinkan read/write
+        auth.signInAnonymously()
+            .then(() => {
+                console.log("Login anonim di pesan.html sukses");
+                // Setelah login berhasil, baru loadMessages
+                loadMessages();
+            })
+            .catch((error) => {
+                console.error("Gagal login anonim:", error);
+            });
 
         async function loadMessages() {
             try {
-                // Ambil data dari koleksi "pesanMasuk", urutkan berdasar 'waktu' descending
                 let snapshot = await db.collection("pesanMasuk")
                     .orderBy("waktu", "desc")
                     .get();
-
                 let tbody = document.getElementById("pesanTableBody");
                 tbody.innerHTML = "";
 
@@ -235,17 +228,15 @@
             }
         }
 
-        // Hapus satu pesan
         async function hapusPesan(docId) {
             try {
                 await db.collection("pesanMasuk").doc(docId).delete();
-                loadMessages(); // Refresh tampilan
+                loadMessages(); // Refresh
             } catch (error) {
                 console.error("Error menghapus data:", error);
             }
         }
 
-        // Hapus semua pesan
         async function hapusSemuaPesan() {
             try {
                 let snapshot = await db.collection("pesanMasuk").get();
