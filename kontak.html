@@ -19,6 +19,7 @@
             </ul>
         </nav>
     </header>
+
     <main>
         <section class="contact-form">
             <h2>Hubungi Saya</h2>
@@ -30,13 +31,30 @@
                     <button type="submit">Kirim</button>
                 </div>
             </form>
+            <p id="statusPesan" style="display:none; color: green;">Pesan berhasil dikirim!</p>
         </section>
     </main>
 
     <footer>
         <p>© 2025 Visella Estesia. All Rights Reserved.</p>
     </footer>
-    <script src="script.js"></script>
+
+    <script>
+        document.getElementById("contactForm").addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            let nama = document.getElementById("nama").value;
+            let email = document.getElementById("email").value;
+            let pesan = document.getElementById("pesan").value;
+
+            let pesanTersimpan = JSON.parse(localStorage.getItem("pesanMasuk")) || [];
+            pesanTersimpan.push({ nama, email, pesan, waktu: new Date().toLocaleString() });
+            localStorage.setItem("pesanMasuk", JSON.stringify(pesanTersimpan));
+
+            document.getElementById("contactForm").reset();
+            document.getElementById("statusPesan").style.display = "block";
+        });
+    </script>
 </body>
 
 </html>

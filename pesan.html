@@ -1,11 +1,154 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pesan Masuk</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pesan Masuk dengan Fitur Hapus</title>
+    <style>
+        /* Reset Default */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Struktur Utama */
+        html,
+        body {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            background-color: #E6E6FA;
+            /* Lavender */
+            color: #4B0082;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            background-color: #6A0DAD;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+
+        /* Navigasi */
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        nav ul li {
+            margin: 10px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            display: block;
+            padding: 20px;
+        }
+
+        /* Container Tabel Pesan */
+        .message-display {
+            background: #fff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+            margin: 20px auto;
+            width: 90%;
+            max-width: 1000px;
+        }
+
+        .message-display h2 {
+            color: #6a1b9a;
+            margin-bottom: 10px;
+        }
+
+        /* Tombol Hapus Semua */
+        .delete-all-btn {
+            background-color: #9C2450;
+            /* Merah Material UI */
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 16px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #8e44ad;
+            color: white;
+        }
+
+        /* Tombol Hapus per Baris */
+        .delete-btn {
+            background-color: #A3476D;
+            /* Merah Material UI */
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+
+        /* Footer */
+        footer {
+            background-color: #6A0DAD;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            width: 100%;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .message-display {
+                width: 95%;
+                margin: 10px auto;
+            }
+        }
+    </style>
 </head>
+
 <body>
     <header>
         <nav>
@@ -17,21 +160,75 @@
             </ul>
         </nav>
     </header>
+
     <main>
-        <section class="pesan-list">
+        <section class="message-display">
             <h2>Daftar Pesan Masuk</h2>
-            <table id="pesanTable">
-                <tr>
-                    <th>Nama</th>
-                    <th>Email</th>
-                    <th>Pesan</th>
-                </tr>
+
+            <!-- Tombol Hapus Semua -->
+            <button class="delete-all-btn" onclick="hapusSemuaPesan()">Hapus Semua</button>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Email</th>
+                        <th>Pesan</th>
+                        <th>Waktu</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="pesanTableBody">
+                    <!-- Data akan dimasukkan oleh JavaScript -->
+                </tbody>
             </table>
         </section>
     </main>
+
     <footer>
         <p>© 2025 Visella Estesia. All Rights Reserved.</p>
     </footer>
-    <script src="script.js"></script>
+
+    <script>
+        let pesanTersimpan = [];
+
+        document.addEventListener("DOMContentLoaded", function () {
+            pesanTersimpan = JSON.parse(localStorage.getItem("pesanMasuk")) || [];
+            renderTable();
+        });
+
+        // Fungsi untuk menampilkan data di tabel
+        function renderTable() {
+            const tbody = document.getElementById("pesanTableBody");
+            tbody.innerHTML = "";
+
+            pesanTersimpan.forEach((pesan, index) => {
+                let row = document.createElement("tr");
+                row.innerHTML = `
+          <td>${pesan.nama}</td>
+          <td>${pesan.email}</td>
+          <td>${pesan.pesan}</td>
+          <td>${pesan.waktu}</td>
+          <td><button class="delete-btn" onclick="hapusPesan(${index})">Hapus</button></td>
+        `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Hapus satu pesan
+        function hapusPesan(index) {
+            pesanTersimpan.splice(index, 1);
+            localStorage.setItem("pesanMasuk", JSON.stringify(pesanTersimpan));
+            renderTable();
+        }
+
+        // Hapus semua pesan
+        function hapusSemuaPesan() {
+            localStorage.removeItem("pesanMasuk");
+            pesanTersimpan = [];
+            renderTable();
+        }
+    </script>
 </body>
+
 </html>
